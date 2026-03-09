@@ -168,7 +168,19 @@ npx cypress verify
 
 - **If verification passes:** Proceed to Step 9.
 - **If binary is missing:** Run `npx cypress install` then verify again.
-- **If still fails:** Report the exact error. Stop execution.
+
+### Windows 11 smoke test issue
+
+If `npx cypress verify` fails with `bad option: --smoke-test`, this is a **known compatibility issue** between Cypress 15.x's Electron binary and Windows 11 (build 26200+). Cypress is still installed correctly.
+
+**Fallback verification:**
+```
+npx cypress open
+```
+- If the Cypress GUI opens successfully → Cypress is working. Report **PASS** with a note: "Smoke test skipped due to Windows 11 compatibility — verified via Cypress GUI."
+- If `npx cypress open` also fails → Report as FAIL with the exact error.
+
+Do **not** treat the smoke test failure as a blocker on Windows 11.
 
 ---
 
@@ -251,10 +263,12 @@ npx cypress verify
 ```
 This confirms Cypress is installed and the binary works without needing test files.
 
-### Fallback chain (if headless run fails):
-1. Retry with Chrome: `npx cypress run --headless --browser chrome`
-2. Retry in headed mode: `npx cypress run --headed`
-3. If all fail: Report the error and suggest the user run `npx cypress open` manually to debug.
+### Fallback chain (if validation fails):
+1. If the error is `bad option: --smoke-test` on Windows 11 → skip directly to step 4 (this is the known Windows 11 issue, retrying with Chrome won't help).
+2. Retry with Chrome: `npx cypress run --headless --browser chrome`
+3. Retry in headed mode: `npx cypress run --headed`
+4. Run `npx cypress open` — if the GUI opens and loads correctly, Cypress is working. Report as **PASS** with a note.
+5. If all fail: Report the exact error and stop.
 
 ---
 
@@ -273,19 +287,17 @@ Cypress:          <version>
 ----------------------------------------
 Preflight:        PASS / FAIL
 Install:          PASS / SKIPPED / FAIL
-Binary Verify:    PASS / FAIL
+Binary Verify:    PASS / FAIL / PASS (via GUI)
 Scaffold:         PASS / SKIPPED / FAIL
-Validation:       PASS / FAIL
+Validation:       PASS / FAIL / PASS (via GUI)
 ----------------------------------------
+Notes:            <any relevant notes>
 Overall Status:   SUCCESS / PARTIAL / FAILED
 ========================================
 ```
 
-### If SUCCESS:
-> "Cypress is set up and ready. Add your first test in `cypress/e2e/` and run with `npx cypress open`."
+### Status classification:
 
-### If PARTIAL:
-> List what succeeded and what failed. Provide exact next steps for the user to resolve.
-
-### If FAILED:
-> Show the step that failed, the exact error, and what the user needs to do.
+- **SUCCESS:** All steps passed. If smoke test failed but `npx cypress open` worked, this is still SUCCESS — add a note: "Smoke test skipped due to Windows 11 compatibility — verified via Cypress GUI."
+- **PARTIAL:** Some steps failed but Cypress may still be usable. List what succeeded and what failed. Provide exact next steps.
+- **FAILED:** A critical step failed and Cypress is not usable. Show the step that failed, the exact error, and what the user needs to do.
