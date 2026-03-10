@@ -7,12 +7,14 @@ This is the entry point for all agents. Read this file first to determine which 
 | Section | File | Description |
 |---------|------|-------------|
 | Setup & Run | `01-setup-run.md` | Install Node (if missing), install Cypress, scaffold config, verify setup |
+| Test Writing Standards | `02-test-writing.md` | Project structure detection, test categorization, writing standards, selector strategy, command patterns, anti-patterns |
 
 ## Agent-to-Section Mapping
 
 | Agent | Sections |
 |-------|----------|
 | `cypress-setup-agent` | `01-setup-run.md` |
+| `cypress-test-writer-agent` | `02-test-writing.md` |
 
 ## Rules
 

@@ -41,11 +41,15 @@ cypress-agentic-kit/
 ├── README.md                          # This file
 ├── knowledge-base/
 │   ├── 00-master.md                   # Index — lists all sections + agent mappings
-│   └── 01-setup-run.md               # Setup runbook (11 steps)
+│   ├── 01-setup-run.md               # Setup runbook (11 steps)
+│   └── 02-test-writing.md            # Test writing standards (10 sections)
 ├── agents/
-│   └── cypress-setup-agent.md         # Setup agent prompt
+│   ├── cypress-setup-agent.md         # Setup agent prompt
+│   └── cypress-test-writer-agent.md   # Test writer agent prompt
 └── prompts/
-    └── bootstrap.md                   # One prompt to install everything
+    ├── bootstrap.md                   # One prompt to install everything
+    ├── test-writer.md                 # One prompt to start writing tests
+    └── sync.md                        # One prompt to update kit files
 ```
 
 ## Works With Any Project
@@ -56,14 +60,26 @@ cypress-agentic-kit/
 | Non-Node project (Laravel, Django, Rails, WordPress) | Creates minimal package.json, installs Cypress |
 | No Node.js on machine | Installs Node.js with your consent, then proceeds |
 
+## Writing Tests
+
+After Cypress is set up, use the test writer agent to generate tests:
+
+1. Paste the prompt from [`prompts/test-writer.md`](prompts/test-writer.md) into your Claude session.
+2. The agent runs pre-flight checks and reads your project structure.
+3. Tell it what feature or flow you want to test.
+4. It writes the test, adds `data-cy` selectors to your app code, and gives you a summary.
+
+Already have the kit installed from an earlier version? Run [`prompts/sync.md`](prompts/sync.md) first to pull the latest files.
+
 ## What's Coming Next
 
-| Phase | What |
-|-------|------|
-| Phase 2 | Test writing standards KB + test writer agent |
-| Phase 3 | Manual test case generator agent |
-| Phase 4 | Project config KB (base URL, auth, environments) |
-| Phase 5 | CI integration KB + CI agent |
+| Phase | What | Status |
+|-------|------|--------|
+| Phase 1 | Cypress setup automation | Done |
+| Phase 2 | Test writing standards KB + test writer agent | Done |
+| Phase 3 | Manual test case generator agent | Planned |
+| Phase 4 | Project config KB (base URL, auth, environments) | Planned |
+| Phase 5 | CI integration KB + CI agent | Planned |
 
 ## Design Principles
 

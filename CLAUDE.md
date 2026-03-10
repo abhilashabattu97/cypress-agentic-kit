@@ -13,6 +13,7 @@
 | Agent                    | Sections to Load         |
 |--------------------------|--------------------------|
 | cypress-setup-agent      | `01-setup-run.md`        |
+| cypress-test-writer-agent | `02-test-writing.md`     |
 
 ## Execution Rules
 
