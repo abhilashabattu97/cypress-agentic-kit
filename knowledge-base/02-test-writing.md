@@ -644,6 +644,51 @@ cy.wait('@loginRequest').its('response.statusCode').should('eq', 200)
 - Always give intercepts an alias with `.as('name')` — use descriptive names
 - Use stubbing when you want to control test data or test error scenarios
 - Use spying when you want to verify the app sends correct requests
+- **Only intercept APIs your test is directly asserting on.** Do not intercept every API the page calls. Unrelated intercepts add noise, and if any unrelated API is slow or fails, it will timeout or break the test for reasons outside what you're testing.
+
+### 7.5.1: Intercept Timing with Auth Flows
+
+If the test requires login or authentication before testing the actual feature, **set up test-specific intercepts after the auth step completes — not before.**
+
+Login and auth flows trigger their own API calls (token requests, user profile fetches, session validation, etc.). If you set up intercepts before login, those auth-related calls can match and consume your intercepts, leaving the actual feature's API calls unmatched.
+
+**Wrong — intercepts before login:**
+```typescript
+beforeEach(() => {
+  // Intercept set up first
+  cy.intercept('GET', '/api/users').as('getUsers')
+
+  // Login triggers its own API calls — may consume the intercept above
+  cy.login('user@example.com', 'password123')
+  cy.visit('/dashboard')
+})
+
+it('shows the user list', () => {
+  // This wait may fail — the intercept was already consumed during login
+  cy.wait('@getUsers')
+  cy.get('[data-cy="user-list"]').should('be.visible')
+})
+```
+
+**Correct — intercepts after login:**
+```typescript
+beforeEach(() => {
+  // Login first — let all auth API calls finish
+  cy.login('user@example.com', 'password123')
+  cy.visit('/dashboard')
+})
+
+it('shows the user list', () => {
+  // Set up intercept AFTER auth is done, BEFORE the action that triggers it
+  cy.intercept('GET', '/api/users').as('getUsers')
+  cy.get('[data-cy="refresh-btn"]').click()
+
+  cy.wait('@getUsers')
+  cy.get('[data-cy="user-list"]').should('be.visible')
+})
+```
+
+**Rule:** Auth/login is setup. Intercepts are part of the test. Keep them separate. If a page loads data on visit (not triggered by a user action), set up the intercept *after* login but *before* `cy.visit()`:
 
 ### 7.6: Working with `cy.then()` and Cypress Chains
 
@@ -880,6 +925,44 @@ afterEach(() => {
 **Why it's bad:** Cypress automatically clears cookies, local storage, and session storage between tests. Manual cleanup is redundant and slows down the suite.
 
 **Instead:** Let Cypress handle cleanup. Only use `afterEach` if you need to clean up external state (e.g., delete test data via API) that Cypress doesn't handle automatically.
+
+### 9.11: Blanket API Interception
+
+**Wrong:**
+```typescript
+beforeEach(() => {
+  cy.intercept('GET', '/api/users').as('getUsers')
+  cy.intercept('GET', '/api/notifications').as('getNotifications')
+  cy.intercept('GET', '/api/settings').as('getSettings')
+  cy.intercept('GET', '/api/analytics').as('getAnalytics')
+  cy.visit('/dashboard')
+})
+
+it('shows the user list', () => {
+  // Waiting on ALL intercepted APIs — test only cares about users
+  cy.wait(['@getUsers', '@getNotifications', '@getSettings', '@getAnalytics'])
+  cy.get('[data-cy="user-list"]').should('be.visible')
+})
+```
+
+**Why it's bad:** The test is about the user list, but it waits on every API the page calls. If the analytics or notifications API is slow, the test times out — for a reason completely unrelated to what it's testing. This is a major source of flaky tests.
+
+**Instead:** Only intercept and wait on the API that your test is asserting on.
+```typescript
+beforeEach(() => {
+  cy.visit('/dashboard')
+})
+
+it('shows the user list', () => {
+  cy.intercept('GET', '/api/users').as('getUsers')
+  cy.get('[data-cy="refresh-btn"]').click()
+
+  cy.wait('@getUsers')
+  cy.get('[data-cy="user-list"]').should('be.visible')
+})
+```
+
+**Rule:** One test, one concern. Intercept only what the test needs to verify. Let other APIs resolve on their own.
 
 Only proceed to Section 10 when anti-patterns are understood.
 
