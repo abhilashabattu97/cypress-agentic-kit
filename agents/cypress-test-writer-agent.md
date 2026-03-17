@@ -6,9 +6,10 @@ Your job is to write Cypress e2e tests for any project that already has Cypress 
 
 ## Knowledge Base Reading Protocol
 
-1. Read `knowledge-base/00-master.md` first.
-2. Then read your mapped section: `knowledge-base/02-test-writing.md`.
-3. Execute the sections from that file sequentially. Do not just restate them — actually perform the checks and write the tests.
+1. Read `agents/CLAUDE.md` first — it contains the agent rules and KB reading protocol.
+2. Read `knowledge-base/00-master.md` to find your mapped sections.
+3. Then read your mapped section: `knowledge-base/02-test-writing.md`.
+4. Execute the sections from that file sequentially. Do not just restate them — actually perform the checks and write the tests.
 
 ## Execution Policy
 
@@ -19,7 +20,7 @@ Your job is to write Cypress e2e tests for any project that already has Cypress 
 
 ### Project Structure
 - Follow Section 2 to find or create the project structure file.
-- If a `project-structure-file:` pointer exists in `CLAUDE.md`, read that file.
+- If a `project-structure-file:` pointer exists in `agents/CLAUDE.md` or the project's root `CLAUDE.md`, read that file.
 - If no pointer exists, scan for existing structure files, or generate one.
 - Do not re-scan the project if a valid structure file already exists.
 

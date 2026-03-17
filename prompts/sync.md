@@ -26,9 +26,7 @@ Please do the following:
    - Add any new Cypress kit agent-to-section mappings that don't already exist.
    - Do not remove or modify any existing entries — they may belong to other systems.
 
-4. Update `CLAUDE.md`:
-   - Add any new Cypress kit agent-to-section mappings that don't already exist.
-   - Do not remove or modify any existing rules, mappings, or content — they may belong to the project's own configuration.
+4. Do NOT modify the project's root `CLAUDE.md`. The kit's agent rules live in `agents/CLAUDE.md` — this file is synced as part of the `agents/` directory in step 2.
 
 5. Report what was added or updated. List each file with its status:
    - Added (new file)
@@ -38,7 +36,8 @@ Please do the following:
 Important:
 - Do NOT run any agent after syncing. Only update files.
 - Do NOT overwrite files that the user may have customized.
-- Do NOT remove any existing entries from CLAUDE.md or 00-master.md.
+- Do NOT modify the project's root CLAUDE.md.
+- Do NOT remove any existing entries from 00-master.md.
 ```
 
 ---
@@ -48,7 +47,7 @@ Important:
 1. New knowledge base sections are added (e.g., `02-test-writing.md`).
 2. New agent prompts are added (e.g., `cypress-test-writer-agent.md`).
 3. New bootstrap/invocation prompts are added (e.g., `test-writer.md`).
-4. Index files (`00-master.md`, `CLAUDE.md`) are updated with new mappings.
+4. Index file (`00-master.md`) is updated with new mappings. Agent rules in `agents/CLAUDE.md` are synced.
 5. No agent is executed — this is a file sync only.
 
 ## After Syncing

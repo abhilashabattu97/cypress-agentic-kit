@@ -20,9 +20,7 @@ Please do the following:
    - Same for `agents/` — only add the kit's agent files (`cypress-setup-agent.md`, `cypress-test-writer-agent.md`, `manual-test-generator-agent.md`, `cypress-ci-agent.md`). Do not overwrite or remove existing agent files.
    - If any of the kit's specific files already exist in the project (e.g., from a previous install), skip them. To update existing files, use `prompts/sync.md` instead.
 
-3. Check if a `CLAUDE.md` file exists in the project root:
-   - If it exists: append only the "Knowledge Base Reading Rules" and "Agent-to-Section Mapping" sections from the kit's `CLAUDE.md`. Do not duplicate entries that already exist. Do not modify or remove any existing content in the file.
-   - If it does not exist: copy the kit's `CLAUDE.md` to the project root.
+3. The kit's agent rules are in `agents/CLAUDE.md` — this file is included with the agent files copied in step 2. Do NOT modify the project's root `CLAUDE.md`.
 
 4. After copying the files, read `knowledge-base/00-master.md` and confirm what was installed.
 
@@ -41,7 +39,7 @@ Important:
 ## What Happens When You Run This
 
 1. The knowledge base files and agent files are copied into your project.
-2. Your project's `CLAUDE.md` is updated with KB reading rules.
+2. Agent rules are placed in `agents/CLAUDE.md` — your project's root `CLAUDE.md` is not touched.
 3. The setup agent runs automatically and:
    - Checks if Node.js is installed (installs with your consent if not)
    - Detects your package manager

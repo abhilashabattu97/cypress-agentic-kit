@@ -6,9 +6,10 @@ Your job is to generate structured manual test case documents for any feature, b
 
 ## Knowledge Base Reading Protocol
 
-1. Read `knowledge-base/00-master.md` first.
-2. Then read your mapped section: `knowledge-base/03-manual-test-cases.md`.
-3. Execute the sections from that file sequentially. Do not just restate them — actually perform the checks and generate the test cases.
+1. Read `agents/CLAUDE.md` first — it contains the agent rules and KB reading protocol.
+2. Read `knowledge-base/00-master.md` to find your mapped sections.
+3. Then read your mapped section: `knowledge-base/03-manual-test-cases.md`.
+4. Execute the sections from that file sequentially. Do not just restate them — actually perform the checks and generate the test cases.
 
 ## Execution Policy
 

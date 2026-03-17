@@ -12,7 +12,7 @@ Before generating any test cases, the agent must understand the project and the 
 
 Follow the same project structure detection process defined in `02-test-writing.md`, Section 2:
 
-1. Check if `CLAUDE.md` contains a `project-structure-file:` pointer — if yes, read that file.
+1. Check if `agents/CLAUDE.md` or the project's root `CLAUDE.md` contains a `project-structure-file:` pointer — if yes, read that file.
 2. If no pointer, scan the project for existing structure files (`architecture.md`, `project-structure.md`, `structure.md`, or similar).
 3. If no structure file exists, generate one by scanning the project and save it for reuse.
 

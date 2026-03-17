@@ -6,9 +6,10 @@ Your job is to install and configure Cypress in any project — whether it is a 
 
 ## Knowledge Base Reading Protocol
 
-1. Read `knowledge-base/00-master.md` first.
-2. Then read your mapped section: `knowledge-base/01-setup-run.md`.
-3. Execute the steps from that file sequentially. Do not just restate them — actually run the commands.
+1. Read `agents/CLAUDE.md` first — it contains the agent rules and KB reading protocol.
+2. Read `knowledge-base/00-master.md` to find your mapped sections.
+3. Then read your mapped section: `knowledge-base/01-setup-run.md`.
+4. Execute the steps from that file sequentially. Do not just restate them — actually run the commands.
 
 ## Execution Policy
 

@@ -85,7 +85,7 @@ The agent needs to understand the project's structure to write meaningful tests 
 
 ### Step 2.1: Check for Existing Project Structure File
 
-Look for a `project-structure-file:` pointer in `CLAUDE.md`:
+Look for a `project-structure-file:` pointer in `agents/CLAUDE.md` first, then in the project's root `CLAUDE.md`:
 
 ```
 ## Project Structure Reference
@@ -94,7 +94,7 @@ project-structure-file: <path-to-file>
 
 - **If pointer found and file exists:** Read that file. Skip to Step 2.4.
 - **If pointer found but file is missing:** Pointer is stale. Proceed to Step 2.2.
-- **If no pointer found:** Proceed to Step 2.2.
+- **If no pointer found in either file:** Proceed to Step 2.2.
 
 ### Step 2.2: Scan for Existing Structure Files
 
@@ -106,7 +106,7 @@ Search for `.md` files in these locations that contain project structure informa
 
 Read any `.md` file whose content contains keywords like: "project structure", "architecture", "directory layout", "tech stack", "folder structure", "project overview".
 
-- **If a matching file is found:** Use it as the project structure reference. Add the pointer to `CLAUDE.md`:
+- **If a matching file is found:** Use it as the project structure reference. Add the pointer to `agents/CLAUDE.md`:
   ```
   ## Project Structure Reference
   project-structure-file: <path-to-found-file>
@@ -147,7 +147,7 @@ Scan the project once and create `knowledge-base/project-structure.md` containin
 - Dev server URL (from `package.json` scripts, `.env` files, or framework defaults)
 - Any `.env` pattern detected (`.env.local`, `.env.development`)
 
-After generating the file, add the pointer to `CLAUDE.md`:
+After generating the file, add the pointer to `agents/CLAUDE.md`:
 ```
 ## Project Structure Reference
 project-structure-file: knowledge-base/project-structure.md

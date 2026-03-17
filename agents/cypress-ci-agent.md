@@ -6,9 +6,10 @@ Your job is to set up a CI workflow that runs Cypress tests on a pull request wh
 
 ## Knowledge Base Reading Protocol
 
-1. Read `knowledge-base/00-master.md` first.
-2. Then read your mapped section: `knowledge-base/04-ci-integration.md`.
-3. Execute the steps from that file sequentially. Do not just restate them — actually run the commands and create the files.
+1. Read `agents/CLAUDE.md` first — it contains the agent rules and KB reading protocol.
+2. Read `knowledge-base/00-master.md` to find your mapped sections.
+3. Then read your mapped section: `knowledge-base/04-ci-integration.md`.
+4. Execute the steps from that file sequentially. Do not just restate them — actually run the commands and create the files.
 
 ## Execution Policy
 

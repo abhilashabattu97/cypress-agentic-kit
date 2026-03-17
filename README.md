@@ -37,7 +37,7 @@ You'll get a final report showing what was installed and the status of each step
 
 ```
 cypress-agentic-kit/
-├── CLAUDE.md                          # Rules for how agents read the KB
+├── CLAUDE.md                          # Kit-internal rules (not copied to host projects)
 ├── README.md                          # This file
 ├── knowledge-base/
 │   ├── 00-master.md                   # Index — lists all sections + agent mappings
@@ -46,6 +46,7 @@ cypress-agentic-kit/
 │   ├── 03-manual-test-cases.md       # Manual test case generation (6 sections)
 │   └── 04-ci-integration.md          # CI workflow setup (3 sections)
 ├── agents/
+│   ├── CLAUDE.md                      # Agent rules — installed in host projects
 │   ├── cypress-setup-agent.md         # Setup agent prompt
 │   ├── cypress-test-writer-agent.md   # Test writer agent prompt
 │   ├── manual-test-generator-agent.md # Manual test case generator agent prompt
