@@ -871,7 +871,7 @@ cy.request('http://localhost:8080/api/users')
 
 ### 9.5: Conditional Testing
 
-**Wrong:**
+**Wrong (non-deterministic state):**
 ```typescript
 cy.get('body').then(($body) => {
   if ($body.find('[data-cy="popup"]').length) {
@@ -883,6 +883,40 @@ cy.get('body').then(($body) => {
 **Why it's bad:** Tests must be deterministic. If the popup sometimes appears and sometimes doesn't, the test is not reliably verifying anything.
 
 **Instead:** Control the state so the test knows exactly what to expect. Use intercepts to control API responses. Use `beforeEach` to set up a known starting state.
+
+**Wrong (if/else where one branch always passes):**
+```typescript
+cy.get('[data-cy="hero"]').then(($el) => {
+  const bg = $el.css('background-image')
+  if (bg && bg !== 'none') {
+    // check image URL pattern
+    expect(bg).to.match(/url\(.*\.jpg\)/)
+  } else {
+    // check fallback color
+    expect($el.css('background-color')).to.eq('rgb(0, 0, 0)')
+  }
+})
+```
+
+**Why it's bad:** One of the two branches will always pass. If the image URL is malformed but the fallback color is correct (or vice versa), the test still passes because it only checks the branch that matches. The test can never fail — it is not protecting against anything.
+
+**Instead:** Write separate, deterministic tests — each with a single assertion path that can independently fail:
+```typescript
+it('displays the background image', () => {
+  cy.get('[data-cy="hero"]')
+    .should('have.css', 'background-image')
+    .and('match', /url\(.*\.jpg\)/)
+})
+
+it('has a fallback background color when image fails to load', () => {
+  cy.intercept('**/*.jpg', { statusCode: 404 })
+  cy.visit('/')
+  cy.get('[data-cy="hero"]')
+    .should('have.css', 'background-color', 'rgb(0, 0, 0)')
+})
+```
+
+**Rule:** Every test must have a single, deterministic assertion path. If a test contains if/else logic where one branch always passes, split it into separate tests that each verify one scenario.
 
 ### 9.6: Testing Implementation Details
 

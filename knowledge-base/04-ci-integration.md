@@ -88,6 +88,12 @@ jobs:
         with:
           node-version: 18
 
+      - name: Cache Cypress binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
       - name: Install dependencies
         run: npm ci
 
@@ -104,14 +110,6 @@ jobs:
         with:
           name: cypress-screenshots
           path: cypress/screenshots/
-          retention-days: 7
-
-      - name: Upload videos
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: cypress-videos
-          path: cypress/videos/
           retention-days: 7
 ```
 
@@ -211,7 +209,7 @@ How to use:
 2. When ready to test, add the "ready-to-test" label to the PR.
 3. Cypress tests will run automatically.
 4. Check the Actions tab for results.
-5. On failure, download screenshots/videos from the workflow artifacts.
+5. On failure, download screenshots from the workflow artifacts.
 
 Action Required:
 → Verify that the dev server command and base URL are correct for your project.
