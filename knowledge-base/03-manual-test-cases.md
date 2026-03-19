@@ -45,7 +45,10 @@ Ask the user to provide the following. Present this as a clear checklist:
 >
 > 1. **Feature name** — e.g., "Energy Consumption KPIs", "User Login", "Search Filters"
 > 2. **Requirements or description** — a requirement document, user story, ticket link, or a brief explanation of what the feature does
-> 3. **Design reference** (optional) — Figma link, screenshots, or design spec
+> 3. **Figma URL** — the Figma frame URL for this feature's design. Share the URL for the specific frame/screen, not the entire file.
+>    - How to get it: In Figma, click the frame you want → copy the URL from your browser. It should contain a `node-id` parameter (e.g., `https://www.figma.com/design/<key>/<name>?node-id=1-1901`)
+>    - Share one frame per feature. If the feature spans multiple frames (e.g., desktop + mobile), share each frame URL separately.
+>    - If Figma is not available, you can provide screenshots or skip — the agent will generate test cases based on requirements alone, but UI coverage will be less detailed.
 > 4. **Roles involved** (optional) — if the feature has role-based access, which roles exist and what each can do
 
 **Rules:**
@@ -53,6 +56,12 @@ Ask the user to provide the following. Present this as a clear checklist:
 - If the user provides a vague description ("test the dashboard"), ask for specifics — what components are on the dashboard, what data does it show, what interactions are possible
 - If the user points to a source file or component instead of a description, read the source code and extract the feature behavior from it — then confirm your understanding with the user before generating cases
 - Never guess feature behavior — confirm with the user when unclear
+
+**When the user provides a Figma URL:**
+- Use the Figma MCP tool (`get_design_context`) to read the design
+- Extract from Figma: component names, interactive elements (buttons, dropdowns, inputs), states visible in the design (empty, loading, error, populated), responsive variants (mobile/desktop frames), navigation structure
+- Do NOT extract from Figma: padding, margins, spacing values, font sizes, color hex codes, border-radius, shadows, or any visual measurement — these are design details, not test case inputs
+- If the Figma response is too large, ask the user to share a more specific frame URL
 
 Only proceed to Section 2 when the project structure is understood and feature details are gathered.
 
@@ -185,21 +194,23 @@ This section defines what belongs in each of the 4 test case categories and prov
 
 ### 3.2: UI Test Cases
 
-**What belongs here:** Tests that verify the visual presentation, layout, responsiveness, and user-facing behavior of the feature — how it looks and feels, not what it computes.
+**What belongs here:** Tests that verify the user-facing behavior, states, and responsiveness of the feature — how it behaves visually, not what it computes. Focus on things a QA tester can meaningfully verify by looking at the screen.
 
 **Guiding questions to generate cases:**
-- Does the layout match the design spec / Figma?
-- Are labels, titles, and text content correct?
+- Are labels, titles, and text content correct and visible?
 - Do loading states show while data is being fetched?
-- Do empty states show when there is no data?
+- Do empty states show a meaningful message when there is no data?
 - Are error messages clear and user-friendly when something fails?
-- Is the feature usable on different screen sizes (if responsive)?
+- If the design has both mobile and desktop views, is the feature responsive and usable on both?
 - Do interactive elements give visual feedback (hover, active, disabled states)?
-- Are tooltips, modals, and popovers displayed correctly?
+- Are tooltips, modals, and popovers displayed and dismissed correctly?
 - Is scrolling behavior correct when content overflows?
+- Are all components from the design present and visible on the page?
+
+**Note:** UI test cases focus on **behavior and states** — not visual measurements. Do not write cases that ask a tester to verify padding, margins, font sizes, or color values. If a Figma URL was provided, use it to understand what components and states exist, not to extract pixel-level specs.
 
 **Sub-feature grouping examples:**
-- Layout & Visual Consistency
+- Component Presence & Visibility
 - Loading & Empty States
 - Error Handling UI
 - Responsive Behavior
@@ -304,6 +315,7 @@ This section defines rules the agent must follow when generating test cases. The
 - Performance benchmarks (e.g., "page should load in under 3 seconds") unless the user specifically asks for them
 - Security test cases (e.g., SQL injection, XSS) unless the user specifically asks for them
 - Test cases that are impossible to verify manually (e.g., "verify memory usage stays below 100MB")
+- Test cases that verify visual measurements (e.g., "padding should be 16px", "font size is 14px", "color is #1A1A1A") — these are design specs, not testable scenarios for a QA tester
 
 Only proceed to Section 5 when writing rules are understood.
 
@@ -362,11 +374,11 @@ Vague preconditions like "App is open" force the automation agent to guess the s
 
 ### 5.5: Cases That Are Not Automatable
 
-Some manual test cases are inherently visual or subjective and cannot be automated with Cypress. This is expected. Examples:
+Some manual test cases are inherently subjective and cannot be automated with Cypress. This is expected. Examples:
 
-- "Layout matches Figma design"
-- "Typography and spacing are consistent"
-- "Animation feels smooth"
+- "Animation feels smooth and natural"
+- "Content is readable and well-organized"
+- "Overall user flow feels intuitive"
 
 Do not avoid writing these cases — they are valid manual tests. But do not force them into an automation-friendly format either. Write them naturally. The automation agent will skip cases it cannot convert and will not attempt to automate subjective checks.
 
@@ -430,11 +442,17 @@ If the user asks for test cases for multiple features in one session:
 If a test case document already exists for the feature:
 
 1. Read the existing document first
-2. Ask the user what they want:
+2. If the user provides a Figma URL, read the current Figma design fresh using the MCP tool
+3. Compare: check if the existing MTC still aligns with the current Figma design
+   - Look for: new components in Figma not covered in MTC, components removed from Figma that MTC still references, components whose behavior or states have changed
+   - If differences are found, report them to the user before proceeding (e.g., "Figma now includes a date range filter that isn't covered in the existing test cases")
+4. Ask the user what they want:
    - **Add new cases** — append new cases to the existing document, continue TC numbering from where it left off
    - **Regenerate** — replace the entire document with a fresh set of cases
    - **Update specific section** — modify only the section the user specifies
-3. Do not silently overwrite an existing document — always ask
+   - **Sync with Figma** — update the MTC based on differences found between the current design and existing test cases. Add cases for new components, remove cases for removed components, update cases where behavior changed. Keep TC numbering stable — new cases get the next sequential number, removed cases are deleted (numbers are not reused)
+5. Do not silently overwrite an existing document — always ask
+
 
 ### 6.6: Idempotent Behavior
 

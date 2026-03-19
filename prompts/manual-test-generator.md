@@ -19,7 +19,7 @@ Please do the following:
 
 3. Execute the test case generation runbook from `knowledge-base/03-manual-test-cases.md`:
    - Run pre-flight checks (understand project structure, check for existing test case docs)
-   - Ask me for the feature name and description
+   - Ask me for the feature requirements (requirement or description) and the Figma frame URL for the design
    - Generate test cases across all 4 categories (Functional, UI, Interdependency, Edge Cases)
 
 4. When generating test cases:
@@ -33,6 +33,7 @@ Important:
 - Do not modify any application code — only generate test case documents.
 - Show me the complete document before writing any file.
 - Give me a summary after generating.
+- Use Figma to understand UI behavior and states — not to extract visual measurements.
 ```
 
 ---
@@ -40,7 +41,7 @@ Important:
 ## What Happens When You Run This
 
 1. The agent checks for project structure and existing test case documents.
-2. It asks you for the feature name and description (requirement doc, user story, or brief explanation).
+2. It asks you for the feature requirements (requirement or description) and the Figma frame URL for the design.
 3. It generates a structured test case document with 4 sections:
    - Functional Test Cases
    - UI Test Cases
