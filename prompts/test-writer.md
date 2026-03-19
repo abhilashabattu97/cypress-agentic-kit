@@ -20,7 +20,7 @@ Please do the following:
 3. Execute the test writing runbook from `knowledge-base/02-test-writing.md`:
    - Run pre-flight checks (verify Cypress is installed, read config, check existing tests and custom commands)
    - Detect or create the project structure file
-   - Then ask me what feature or flow I want to test
+   - Then ask me what feature or flow I want to test, and the Figma frame URL for the design
 
 4. When writing tests:
    - Show me the complete test code before creating any files
@@ -33,6 +33,7 @@ Important:
 - Do not modify application code beyond adding data-cy attributes.
 - Show me every file change before making it.
 - Give me a summary after writing each test.
+- If a Figma URL is provided, use it to validate that the Cypress tests cover all components, states, and interactions visible in the design. Use Figma component names to inform data-cy attribute naming. Extract visual properties (font sizes, colors, padding, margins) from Figma to generate CSS assertion tests where applicable.
 ```
 
 ---
@@ -41,7 +42,7 @@ Important:
 
 1. The agent runs pre-flight checks to verify Cypress is ready.
 2. It reads or creates a project structure file to understand your codebase.
-3. It asks you what feature or flow you want to test.
+3. It asks you what feature or flow you want to test, and the Figma frame URL for the design.
 4. For each test, it:
    - Shows the test code and data-cy attributes before creating files
    - Waits for your confirmation

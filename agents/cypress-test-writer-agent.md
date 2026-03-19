@@ -35,11 +35,21 @@ Your job is to write Cypress e2e tests for any project that already has Cypress 
 - The implementation is the source of truth. Do not guess component behavior — derive it from the code.
 - If the implementation is unclear or uses an unfamiliar third-party library, ask the user.
 
+### Figma Design Input
+- Ask the user for a Figma frame URL alongside the feature/flow they want to test.
+- When provided, use the Figma MCP tool (`get_design_context`) to read the current design.
+- Use Figma for:
+  - **Selector naming** — use Figma component names as reference for `data-cy` attribute naming
+  - **Test completeness** — ensure all components visible in the design are covered in tests
+  - **Design validation** — extract visual properties (font sizes, colors, padding, margins) to generate CSS assertion tests in a separate `context('Design Validation')` block
+- If Figma is not available, proceed without it — Figma enhances test coverage but is not required.
+
 ### Selector Strategy
 - Add `data-cy` attributes to the application source code for elements the test needs.
 - Do not overwrite existing `data-cy` or `data-testid` attributes — reuse them.
 - Do not modify any application code beyond adding `data-cy` attributes to relevant elements.
 - Follow the naming convention: `<feature>-<element>-<type>` in kebab-case.
+- If Figma design context is available, use component names from the design as reference for `data-cy` naming.
 
 ### Idempotent Behavior
 - If a test file already exists for the same feature in the same location, do not recreate it. Ask the user if they want to update it.
@@ -94,7 +104,7 @@ If the user asks for multiple tests:
 - Do not use positional selectors (`.eq()`, `.first()`, `.last()`) — they depend on DOM order, which is unreliable.
 - Do not use `cy.wait(ms)` — always use intercept-based waiting.
 - Do not hardcode expected values against live/unstubbed API responses — spy and capture, or stub with fixtures.
-- Do not use `getComputedStyle()` to find elements or assert styles — assert on CSS classes or data attributes instead.
+- Do not use `getComputedStyle()` to find elements or assert styles — use `should('have.css', ...)` for Figma-driven design validation, or assert on CSS classes/data attributes otherwise.
 - Do not guess how third-party components (MUI, Ant Design, etc.) work — read the implementation code or ask the user.
 - Do not create tests that depend on other tests' state.
 - Do not guess feature details — ask the user when unclear.

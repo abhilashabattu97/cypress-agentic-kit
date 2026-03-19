@@ -64,9 +64,20 @@ Check if any test files exist in the `cypress/e2e/` directory (or the path defin
 
 - **If no existing tests found:** Use KB defaults from Sections 3–9.
 
+### Step 1.5: Read Figma Design (if provided)
+
+If the user provides a Figma frame URL:
+
+- Use the Figma MCP tool (`get_design_context`) to read the current design
+- Extract: component names, element hierarchy, interactive elements, visual states, responsive variants
+- Also extract: visual properties (font sizes, colors, padding, margins) — these will be used for CSS assertion tests
+- Keep the Figma context alongside the MTC and source code as inputs for test writing
+
+If no Figma URL is provided, proceed without it — Figma is valuable but not blocking.
+
 ### Pre-flight Summary
 
-After completing Steps 1.1–1.4, the agent must have:
+After completing Steps 1.1–1.5, the agent must have:
 
 | Item | Status |
 |------|--------|
@@ -74,6 +85,7 @@ After completing Steps 1.1–1.4, the agent must have:
 | Config file | Read — baseUrl, specPattern, supportFile extracted |
 | Custom commands | Listed (or none found) |
 | Existing test conventions | Learned (or using KB defaults) |
+| Figma design context | Read (or not provided) |
 
 Only proceed to Section 2 when all items are confirmed.
 
@@ -451,6 +463,7 @@ After reading the implementation, add `data-cy` attributes to the application so
 - **Do not overwrite** existing `data-cy` or `data-testid` attributes — reuse them as-is
 - **Do not add to every element** — only add to elements the test actually needs
 - **Do not change any other code** in the component — only add the `data-cy` attribute to the relevant HTML/JSX elements
+- If Figma design context is available, use Figma component names as a reference for naming `data-cy` attributes — this keeps selector names consistent with the design language the team uses
 
 ### 6.4: `data-cy` Naming Convention
 
@@ -593,6 +606,34 @@ cy.get('[data-cy="user-card"]')
 - Use `should('not.be.visible')` when the element is in the DOM but hidden
 - Use `should('contain.text', ...)` for partial text match
 - Use `should('have.text', ...)` for exact text match
+
+### 7.3.1: Design Validation Assertions (Figma-Driven)
+
+When a Figma URL is provided, generate CSS assertion tests for visual properties extracted from the design. These validate that the implementation matches the design spec.
+
+```typescript
+// Font size
+cy.get('[data-cy="page-title"]').should('have.css', 'font-size', '24px')
+
+// Color
+cy.get('[data-cy="page-title"]').should('have.css', 'color', 'rgb(26, 26, 26)')
+
+// Padding
+cy.get('[data-cy="kpi-card"]').should('have.css', 'padding', '16px')
+
+// Responsive — verify at different viewports
+cy.viewport(375, 812)
+cy.get('[data-cy="sidebar"]').should('not.be.visible')
+cy.viewport(1440, 900)
+cy.get('[data-cy="sidebar"]').should('be.visible')
+```
+
+**Rules:**
+- Only assert on properties that are explicitly defined in the Figma design
+- Use `have.css` for stable properties — be aware that computed values may vary across browsers (see Anti-Pattern 9.13)
+- Group design validation assertions in a separate `context('Design Validation')` block within the test file so they can be run or skipped independently
+- If unsure whether a CSS value will be stable across environments, prefer asserting on the CSS class instead
+- Do not generate design validation tests if no Figma URL was provided
 
 ### 7.4: Waiting — Network-Based Only
 
@@ -1064,6 +1105,8 @@ cy.get('[data-cy="kpi-title"]').should('have.css', 'font-weight', '700')
 ```
 
 **Rule:** Never use `getComputedStyle()` to find or filter elements. Read the implementation (Section 6.3) to understand what classes or attributes control styles, and assert on those instead.
+
+**Exception:** When Figma design context is available, Figma-driven CSS assertions using `should('have.css', ...)` are acceptable (see Section 7.3.1). The key difference: `have.css` is a Cypress-native assertion that handles retries and cross-browser normalization, while `getComputedStyle()` is raw browser API with none of those safeguards.
 
 ### 9.14: Guessing Third-Party Component Behavior
 
