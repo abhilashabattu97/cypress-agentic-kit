@@ -282,3 +282,60 @@ If manual test cases do not exist for the feature:
 - Do not attempt to define scope without them.
 - Point the user to `manual-test-generator-agent` to generate manual test cases first.
 - Stop and wait. Do not proceed to test writing.
+
+---
+
+## Section 5: Coverage Report for Existing Tests
+
+When Cypress tests already exist for a feature but no coverage report has been generated, the agent should evaluate scope and generate the report without writing new tests.
+
+### When to trigger this flow
+
+- The user asks to generate a coverage report for an existing feature.
+- The agent detects existing Cypress tests for a feature but no corresponding entry in `cypress/coverage-report.md`.
+
+### Step 5.1: Gather Inputs
+
+1. **Manual test cases** (mandatory) — locate them in the project (check `test-cases/` directory or user-provided path).
+2. **Existing Cypress tests** — scan `cypress/e2e/` for test files related to the feature.
+
+If manual test cases do not exist, point the user to `manual-test-generator-agent` first. Do not generate a coverage report without them — the scope cannot be determined.
+
+### Step 5.2: Run Scope Categorization
+
+Follow Section 1 (Step 1.2 and 1.3) to extract scenarios from the manual test cases and categorize each against the scope rules.
+
+Present the scope proposal to the user for validation (Section 2). The user may adjust categorizations before finalizing.
+
+### Step 5.3: Map Existing Tests to Scope
+
+For each finalized IN SCOPE scenario:
+
+1. Check if a corresponding Cypress test already exists.
+2. Match by test description (`describe`/`it` block text), file name, or the flow being tested.
+3. Mark as:
+   - **Written** — a matching test exists
+   - **Gap** — no matching test found, note the reason
+
+For tests that exist but do not match any scoped scenario:
+
+- List them separately as **Unscoped tests** — tests that exist but were not part of the manual test cases. Flag these for the user to review (they may indicate missing manual test cases or outdated tests).
+
+### Step 5.4: Generate Coverage Report
+
+Follow Section 3 (Step 3.2) to create the coverage report entry for this feature. Add an additional section if unscoped tests were found:
+
+```markdown
+### Unscoped Tests (Exist but not in manual test cases)
+
+| Test File | Test Description | Action Needed |
+|-----------|-----------------|---------------|
+| cypress/e2e/smoke/login-timeout.cy.ts | Session timeout redirect | Add to manual test cases? |
+```
+
+### Step 5.5: Report to User
+
+Present the coverage summary (Section 3, Step 3.4) and additionally:
+
+- If there are gaps — ask if the user wants to write the missing tests now.
+- If there are unscoped tests — ask if the manual test cases should be updated to include them.
