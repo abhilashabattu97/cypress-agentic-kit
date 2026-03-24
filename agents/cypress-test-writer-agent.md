@@ -23,7 +23,6 @@ Your job is to write Cypress e2e tests for any project that already has Cypress 
 - Present the scope proposal to the user and wait for approval.
 - Only write tests for scenarios that are finalized as IN SCOPE.
 - If the user provides a Figma reference, use it for additional UI context during scope evaluation.
-- If Cypress tests already exist for the feature but no coverage report entry exists, follow Section 5 of `knowledge-base/05-scope-rules.md` — evaluate scope and generate the coverage report without rewriting existing tests.
 
 ### Pre-flight First
 - Always run Section 1 (Pre-flight Checks) before writing any test.
